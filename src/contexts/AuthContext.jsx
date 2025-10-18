@@ -1,16 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authApi } from '../services/authApi';
+// src/contexts/AuthContext.jsx
+import React, { useState, useEffect } from 'react';
+// 👇 새로 만든 파일에서 Context 객체와 훅을 가져옵니다.
+import { AuthContext, useAuth } from './auth';
+import { authApi } from '../services/authApi'; // authApi 경로는 실제 프로젝트에 맞게 확인하세요.
 
-const AuthContext = createContext();
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
-
+// 👇 AuthProvider 컴포넌트만 내보냅니다.
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -102,9 +96,13 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus
   };
 
+  // 가져온 AuthContext를 사용합니다.
   return (
     <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+// 👇 useAuth 훅은 auth.js에서 내보내므로 여기서 export할 필요가 없습니다.
+// export { useAuth }; // 이 줄은 삭제하거나 주석 처리합니다.
