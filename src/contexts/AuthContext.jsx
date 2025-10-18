@@ -1,7 +1,7 @@
 // src/contexts/AuthContext.jsx
 import React, { useState, useEffect } from 'react';
 // 👇 새로 만든 파일에서 Context 객체와 훅을 가져옵니다.
-import { AuthContext, useAuth } from './auth';
+import { AuthContext } from './auth';
 import { authApi } from '../services/authApi'; // authApi 경로는 실제 프로젝트에 맞게 확인하세요.
 
 // 👇 AuthProvider 컴포넌트만 내보냅니다.
@@ -43,6 +43,7 @@ export const AuthProvider = ({ children }) => {
         return { success: false, message: response.data.message };
       }
     } catch (error) {
+        console.error('로그인 실패:', error);
       return { success: false, message: '로그인 중 오류가 발생했습니다.' };
     }
   };
@@ -59,6 +60,7 @@ export const AuthProvider = ({ children }) => {
         return { success: false, message: response.data.message };
       }
     } catch (error) {
+        console.error('회원가입 실패:', error);
       return { success: false, message: '회원가입 중 오류가 발생했습니다.' };
     }
   };
