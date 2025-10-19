@@ -1,7 +1,7 @@
 /* src/components/Header.jsx */
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from "../contexts/auth";
+import  useAuth  from "../contexts/auth";
 import styled from '@emotion/styled';
 import { FaHome, FaList, FaFire, FaPlus, FaUser, FaSignOutAlt, FaCrown } from 'react-icons/fa';
 import { toast } from 'react-toastify';
