@@ -90,4 +90,40 @@ export const restaurantAPI = {
   }
 };
 
+// submissionAPI 객체를 생성하고 'export' 합니다.
+export const submissionAPI = {
+  // 제보된 맛집 목록 가져오기 (가짜 데이터)
+  getSubmissions: async () => {
+    console.log("Fetching submissions (fake data)");
+    // 실제로는 관리자용 API를 호출해야 합니다.
+    return {
+      data: [
+        { id: 101, name: "새로운 제보 맛집1", status: "pending", category: "한식" },
+        { id: 102, name: "새로운 제보 맛집2", status: "pending", category: "일식" },
+      ]
+    };
+  },
+
+  // 맛집 제보하기 (가짜 데이터)
+  submitRestaurant: async (restaurantData) => {
+    console.log("Submitting new restaurant:", restaurantData);
+    // 실제로는 POST /submissions 같은 API를 호출합니다.
+    // jsonplaceholder를 사용한다면:
+    // return api.post('/posts', restaurantData); // 예시
+    return { data: { ...restaurantData, id: 103, status: "pending" } };
+  },
+
+  // 제보 승인하기 (가짜)
+  approveSubmission: async (id) => {
+    console.log(`Approving submission ${id}`);
+    return { data: { message: "Approved" } };
+  },
+
+  // 제보 거절하기 (가짜)
+  rejectSubmission: async (id) => {
+    console.log(`Rejecting submission ${id}`);
+    return { data: { message: "Rejected" } };
+  }
+};
+
 export default api;
