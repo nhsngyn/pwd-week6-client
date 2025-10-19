@@ -26,12 +26,11 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // 세션 만료 시 로그인 페이지로 리다이렉트
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
+    if (error.config.url === '/me') {
+       return Promise.reject(error);
   }
+  window.location.href = '/login';
+}
 );
 
 // 인증 관련 API 함수들
