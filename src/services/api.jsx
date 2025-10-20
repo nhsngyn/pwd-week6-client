@@ -1,8 +1,7 @@
 // src/services/api.jsx (수정 완료)
 
 import axios from 'axios';
-// 👇 Vercel 환경 변수를 읽어오기 위해 environment.js를 import
-import { environment } from '../config/environment';
+import  environment  from '../config/environment';
 
 // Axios 인스턴스 생성
 const api = axios.create({

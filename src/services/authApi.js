@@ -1,7 +1,7 @@
 // src/services/authApi.js
 
 import axios from 'axios';
-import { environment } from '../config/environment';
+import  environment  from '../config/environment';
 
 // Axios 인스턴스 생성
 const apiClient = axios.create({
