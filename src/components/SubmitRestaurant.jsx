@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { toast } from 'react-toastify';
 import { FaCheckCircle } from 'react-icons/fa';
-// 👇 [수정 1] 백엔드 API를 import 합니다.
 import { submissionAPI } from '../services/api';
 
 // ... (스타일 컴포넌트(FormContainer, Input 등)는 모두 동일) ...
