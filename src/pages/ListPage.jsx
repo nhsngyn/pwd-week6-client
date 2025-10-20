@@ -57,10 +57,10 @@ function ListPage() {
   if (error) {
     return <div className="error">에러가 발생했습니다: {error.message}</div>;
   }
-
+const restaurantsArray = data?.data?.data || [];
   const filteredData = selectedCategory === '전체' 
-    ? data?.data 
-    : data?.data.filter(r => r.category === selectedCategory);
+    ? restaurantsArray
+    : restaurantsArray.filter(r => r.category === selectedCategory);
 
   return (
     <PageContainer>

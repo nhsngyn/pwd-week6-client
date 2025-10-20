@@ -24,7 +24,7 @@ function PopularPage() {
     return <div className="error">에러가 발생했습니다: {error.message}</div>;
   }
 
-  return <PopularRestaurants restaurants={data?.data || []} />;
+ return <PopularRestaurants restaurants={data?.data?.data || []} />;
 }
 
 export default PopularPage;
