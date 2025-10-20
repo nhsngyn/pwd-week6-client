@@ -1,9 +1,16 @@
+// src/services/api.jsx (수정 완료)
+
 import axios from 'axios';
+// 👇 Vercel 환경 변수를 읽어오기 위해 environment.js를 import
+import { environment } from '../config/environment';
 
 // Axios 인스턴스 생성
 const api = axios.create({
-  baseURL: 'https://jsonplaceholder.typicode.com', // 실습용 가짜 API
+  // 👇 가짜 API가 아닌, 실제 Render 백엔드 주소를 사용
+  baseURL: environment.API_URL, 
   timeout: 10000,
+  // (참고) authApi.js와 달리 'withCredentials'가 없습니다.
+  // 이 API들은 인증이 필요 없는 API용입니다.
 });
 
 // 요청 인터셉터
@@ -30,100 +37,42 @@ api.interceptors.response.use(
 
 // API 함수들
 export const restaurantAPI = {
-  // 맛집 목록 가져오기 (가짜 데이터)
+  // 👇 가짜 데이터 대신 실제 API를 호출
   getRestaurants: async () => {
-    // 실제로는 백엔드 API를 호출하지만, 실습용으로 가짜 데이터 반환
-    return {
-      data: [
-        {
-          id: 1,
-          name: "송림식당",
-          category: "한식",
-          location: "경기 수원시 영통구 월드컵로193번길 21 원천동",
-          priceRange: "7,000-13,000원",
-          rating: 4.99,
-          description: "맛있는 한식 맛집입니다.",
-          recommendedMenu: ["순두부", "김치찌개","소불고기", "제육볶음"],
-          likes: 0,
-          image: "https://mblogthumb-phinf.pstatic.net/MjAyMjA2MTJfODEg/MDAxNjU0OTYzNTM3MjE1.1BfmrmOsz_B6DBHAnhQSs6qfNIDnssofR-DrzMfigIIg.JHHDheG6ifJjtfKUqLss_mLXWFE9fNJ5BmepNUVXSOog.PNG.cary63/image.png?type=w966"
-        },
-        {
-          id: 2,
-          name: "별미떡볶이",
-          category: "분식",
-          location: "경기 수원시 영통구 아주로 42 아카데미빌딩",
-          priceRange: "7,000-10,000원",
-          rating: 4.98,
-          description: "바삭한 튀김과 함께하는 행복한 한입",
-          recommendedMenu: ["떡볶이", "튀김", "순대", "어묵"],
-          likes: 0,
-          image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA4MTJfMjcg%2FMDAxNzU0OTQ5ODk1Mjg0.GR6i3mNpJJXyqQrozGEJ65InCDBGlEmxc0aCeVHncJgg.sduDPX67J8hhoGxq4vLohpS4dXk1w-706dQLPfVs1iwg.JPEG%2Foutput%25A3%25DF1564208956.jpg"
-        },
-        {
-          id: 3,
-          name: "Sogo",
-          category: "일식",
-          location: "경기 수원시 영통구 월드컵로193번길 7",
-          priceRange: "10,000-16,000원",
-          rating: 4.89,
-          description: "일식 맛집, 구 허수아비,",
-          recommendedMenu: ["냉모밀", "김치돈까스나베", "코돈부르"],
-          likes: 0,
-          image: "https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190707_63%2F1562462598960nPDMy_JPEG%2FW7iKQEhTMzCF3flC1t0pzgzF.jpeg.jpg"
-        }
-      ]
-    };
+    // (백엔드에 구현된 실제 엔드포인트)
+    return api.get('/api/restaurants'); 
   },
 
-  // 맛집 상세 정보 가져오기
+  // 👇 가짜 데이터 대신 실제 API를 호출
   getRestaurantById: async (id) => {
-    const restaurants = await restaurantAPI.getRestaurants();
-    const restaurant = restaurants.data.find(r => r.id === parseInt(id));
-    return { data: restaurant };
+    return api.get(`/api/restaurants/${id}`);
   },
 
-  // 인기 맛집 가져오기
+  // 👇 가짜 데이터 대신 실제 API를 호출
   getPopularRestaurants: async () => {
-    const restaurants = await restaurantAPI.getRestaurants();
-    const sorted = [...restaurants.data].sort((a, b) => b.rating - a.rating);
-    return { data: sorted.slice(0, 5) };
+    return api.get('/api/restaurants/popular');
   }
 };
 
 // submissionAPI 객체를 생성하고 'export' 합니다.
 export const submissionAPI = {
-  // 제보된 맛집 목록 가져오기 (가짜 데이터)
-  getSubmissions: async () => {
-    console.log("Fetching submissions (fake data)");
-    // 실제로는 관리자용 API를 호출해야 합니다.
-    return {
-      data: [
-        { id: 101, name: "새로운 제보 맛집1", status: "pending", category: "한식" },
-        { id: 102, name: "새로운 제보 맛집2", status: "pending", category: "일식" },
-      ]
-    };
-  },
-
-  // 맛집 제보하기 (가짜 데이터)
+  // 👇 가짜 데이터 대신 실제 API를 호출
   submitRestaurant: async (restaurantData) => {
-    console.log("Submitting new restaurant:", restaurantData);
-    // 실제로는 POST /submissions 같은 API를 호출합니다.
-    // jsonplaceholder를 사용한다면:
-    // return api.post('/posts', restaurantData); // 예시
-    return { data: { ...restaurantData, id: 103, status: "pending" } };
+    console.log("Submitting to backend:", restaurantData);
+    
+    // (중요!) 
+    // 맛집 제보 API(/api/submissions)는 로그인이 필요할 수 있습니다.
+    // 만약 로그인이 필요하다면, 이 함수는 api.jsx가 아니라
+    // 'authApi.js'의 'apiClient'를 사용해야 합니다.
+    
+    // 일단은 'api' (인증 없는) 인스턴스를 사용한다고 가정합니다.
+    return api.post('/api/submissions', restaurantData);
   },
-
-  // 제보 승인하기 (가짜)
-  approveSubmission: async (id) => {
-    console.log(`Approving submission ${id}`);
-    return { data: { message: "Approved" } };
-  },
-
-  // 제보 거절하기 (가짜)
-  rejectSubmission: async (id) => {
-    console.log(`Rejecting submission ${id}`);
-    return { data: { message: "Rejected" } };
-  }
+  
+  // (이하 백엔드에 구현된 기능에 맞춰 추가)
+  // getSubmissions: async () => { ... }
+  // approveSubmission: async (id) => { ... }
+  // rejectSubmission: async (id) => { ... }
 };
 
 export default api;
