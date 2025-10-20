@@ -1,10 +1,13 @@
-/* src/components/SubmitRestaurant.jsx */
+/* src/components/SubmitRestaurant.jsx (수정 완료) */
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { toast } from 'react-toastify';
 import { FaCheckCircle } from 'react-icons/fa';
+// 👇 [수정 1] 백엔드 API를 import 합니다.
+import { submissionAPI } from '../services/api';
 
+// ... (스타일 컴포넌트(FormContainer, Input 등)는 모두 동일) ...
 const FormContainer = styled.div`
   background: white;
   padding: 2rem;
@@ -119,35 +122,36 @@ const SuccessMessage = styled.div`
   }
 `;
 
+
 function SubmitRestaurant() {
   const [submitted, setSubmitted] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm();
 
+  // 👇 [수정 2] onSubmit 함수를 백엔드 API를 사용하도록 변경
   const onSubmit = async (data) => {
     try {
-      // Netlify Forms로 제출
-      const response = await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          "form-name": "restaurant-submit",
-          ...data
-        }).toString()
-      });
+      // 폼 데이터를 Render 백엔드로 전송
+      const response = await submissionAPI.submitRestaurant(data);
       
-      if (response.ok) {
+      // 백엔드가 { success: true, ... }를 반환한다고 가정
+      if (response.data && response.data.success) {
         setSubmitted(true);
         toast.success('맛집이 성공적으로 제보되었습니다! 🎉');
         reset();
-        setTimeout(() => setSubmitted(false), 5000);
+        setTimeout(() => setSubmitted(false), 5000); // 5초 후 다시 폼 표시
+      } else {
+        // 백엔드가 { success: false, message: '...' }를 반환한 경우
+        toast.error(response.data.message || '제출에 실패했습니다.');
       }
     } catch (error) {
-        console.error('제출 실패:', error);
-      toast.error('제출 중 오류가 발생했습니다.');
+      console.error('제출 실패:', error);
+      // 네트워크 오류 또는 axios 오류 처리
+      toast.error(error.response?.data?.message || '제출 중 오류가 발생했습니다.');
     }
   };
 
   if (submitted) {
+    // ... (성공 메시지 부분은 동일) ...
     return (
       <FormContainer>
         <SuccessMessage>
@@ -166,8 +170,9 @@ function SubmitRestaurant() {
     <FormContainer>
       <FormTitle>🍽️ 새로운 맛집 제보하기</FormTitle>
       
+      {/* 👇 [수정 3] Netlify Forms용 hidden input 제거 */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <input type="hidden" name="form-name" value="restaurant-submit" />
+        {/* <input type="hidden" name="form-name" value="restaurant-submit" /> <-- 이 줄 삭제 */}
         
         <FormGroup>
           <Label htmlFor="restaurantName">맛집 이름 *</Label>
@@ -183,6 +188,7 @@ function SubmitRestaurant() {
           )}
         </FormGroup>
 
+        {/* ... (다른 폼 그룹들은 모두 동일) ... */}
         <FormGroup>
           <Label htmlFor="category">카테고리 *</Label>
           <Select
@@ -252,7 +258,7 @@ function SubmitRestaurant() {
           <Input
             id="submitterName"
             {...register("submitterName")}
-            placeholder="선택사항"
+          	placeholder="선택사항"
           />
         </FormGroup>
 
@@ -260,25 +266,25 @@ function SubmitRestaurant() {
           <Label htmlFor="submitterEmail">이메일</Label>
           <Input
             id="submitterEmail"
-            type="email"
-            {...register("submitterEmail", {
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "올바른 이메일 형식이 아닙니다"
-              }
-            })}
-            placeholder="선택사항 (답변받을 이메일)"
+          	type="email"
+          	{...register("submitterEmail", {
+          	  pattern: {
+          	 	 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+          	 	 message: "올바른 이메일 형식이 아닙니다"
+          	  }
+          	})}
+          	placeholder="선택사항 (답변받을 이메일)"
           />
           {errors.submitterEmail && (
-            <ErrorMessage>{errors.submitterEmail.message}</ErrorMessage>
+          	<ErrorMessage>{errors.submitterEmail.message}</ErrorMessage>
           )}
-        </FormGroup>
+      	</FormGroup>
 
-        <SubmitButton type="submit" disabled={isSubmitting}>
-          {isSubmitting ? '제출 중...' : '맛집 제보하기'}
-        </SubmitButton>
-      </form>
-    </FormContainer>
+      	<SubmitButton type="submit" disabled={isSubmitting}>
+      	  {isSubmitting ? '제출 중...' : '맛집 제보하기'}
+      	</SubmitButton>
+    	</form>
+  	</FormContainer>
   );
 }
 
